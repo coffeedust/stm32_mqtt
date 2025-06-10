@@ -6,6 +6,7 @@
  */
 
 #include "app.h"
+#include "jsmn.h"
 
 // 데이터 수신 함수
 char* receiveESP() {
@@ -264,11 +265,63 @@ void connectMQTT() {
 }
 
 // MQTT Subscribe
+// +MQTTSUB:0,"MY_TOPIC",5,hello
 char *receiveMQTT() {
 	char *receiveMsg;
 	receiveMsg = receivePacketWithHeader("+MQTTSUB");
 	if(strncmp(&receiveMsg[3], "MY_TOPIC", 8) != 0) return 0;
-	return &receiveMsg[8];
+	return &receiveMsg[2];
+}
+
+int jsoneq(const char *json, jsmntok_t *tok, const char *s) {
+  if (tok->type == JSMN_STRING && (int)strlen(s) == tok->end - tok->start &&
+      strncmp(json + tok->start, s, tok->end - tok->start) == 0) {
+    return 0;
+  }
+  return -1;
+}
+
+void json_parse(char *inStr) {
+	jsmn_parser p;
+	jsmntok_t		t[128];
+	jsmn_init(&p);
+	int result = jsmn_parse(&p, inStr, strlen(inStr), t, 128);
+	// {"KEY":"VAR"}
+	if(result < 1) {
+		printf2("json format error\r\n");
+		return;
+	}
+	for(int i = 1; i < result; i++) {
+		if(jsoneq(inStr, &t[i], "HEADER") == 0) {
+			// %.s 문자열의 길이를 지정하여 출력
+			printf2("HEADER = %.*s\r\n", t[i+1].end - t[i+1].start, inStr + t[i+1].start);
+			i++;
+		}
+		else if(jsoneq(inStr, &t[i], "CONTENT") == 0) {
+			// %.s 문자열의 길이를 지정하여 출력
+			printf2("CONTENT = %.*s\r\n", t[i+1].end - t[i+1].start, inStr + t[i+1].start);
+			i++;
+		}
+		else if(jsoneq(inStr, &t[i], "ITEM1") == 0) {
+			// %.s 문자열의 길이를 지정하여 출력
+			printf2("ITEM1 = %.*s\r\n", t[i+1].end - t[i+1].start, inStr + t[i+1].start);
+			i++;
+		}
+		else if(jsoneq(inStr, &t[i], "ITEM2") == 0) {
+			// %.s 문자열의 길이를 지정하여 출력
+			printf2("ITEM2 = %.*s\r\n", t[i+1].end - t[i+1].start, inStr + t[i+1].start);
+			i++;
+		}
+		else if(jsoneq(inStr, &t[i], "MOTOR") == 0) {
+			// %.s 문자열의 길이를 지정하여 출력
+			printf2("MOTOR = %.*s\r\n", t[i+1].end - t[i+1].start, inStr + t[i+1].start);
+			char tmp[5] = {0};
+			strncpy(tmp, inStr + t[i+1].start, t[i+1].end - t[i+1].start);
+			uint8_t val = atoi(tmp);
+			HAL_GPIO_WritePin(MOTOR_GPIO_Port, MOTOR_Pin, val);
+			i++;
+		}
+	}
 }
 
 void app() {
@@ -315,7 +368,9 @@ void app() {
 			cycle_sub = HAL_GetTick() + 10;
 			char *msg = receiveMQTT();
 			if(msg[0] != 0) {
-				printf2(msg);
+				printf2("%s\r\n", &msg[14]);
+				// json parse
+				json_parse(&msg[14]);
 			}
 		}
 	}
