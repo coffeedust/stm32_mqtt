@@ -1,0 +1,14 @@
+../Core/Src/app.c:11:7:receiveESP	8
+../Core/Src/app.c:48:7:receivePacketWithHeader	2
+../Core/Src/app.c:62:6:waitForResponse	3
+../Core/Src/app.c:79:6:resetESP	3
+../Core/Src/app.c:101:6:connectAP	5
+../Core/Src/app.c:138:6:connectNTPServer	3
+../Core/Src/app.c:165:6:connectServer	2
+../Core/Src/app.c:184:6:closeServer	2
+../Core/Src/app.c:194:6:startServer	1
+../Core/Src/app.c:212:6:sendServer	4
+../Core/Src/app.c:228:6:receiveServer	1
+../Core/Src/app.c:234:6:connectMQTT	4
+../Core/Src/app.c:267:7:receiveMQTT	2
+../Core/Src/app.c:274:6:app	6

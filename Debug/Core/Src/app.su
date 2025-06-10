@@ -1,0 +1,14 @@
+../Core/Src/app.c:11:7:receiveESP	24	static
+../Core/Src/app.c:48:7:receivePacketWithHeader	24	static
+../Core/Src/app.c:62:6:waitForResponse	24	static
+../Core/Src/app.c:79:6:resetESP	16	static
+../Core/Src/app.c:101:6:connectAP	16	static
+../Core/Src/app.c:138:6:connectNTPServer	16	static
+../Core/Src/app.c:165:6:connectServer	16	static
+../Core/Src/app.c:184:6:closeServer	16	static
+../Core/Src/app.c:194:6:startServer	8	static
+../Core/Src/app.c:212:6:sendServer	24	static
+../Core/Src/app.c:228:6:receiveServer	16	static
+../Core/Src/app.c:234:6:connectMQTT	16	static
+../Core/Src/app.c:267:7:receiveMQTT	16	static
+../Core/Src/app.c:274:6:app	536	static
