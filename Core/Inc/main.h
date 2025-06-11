@@ -33,6 +33,8 @@ extern "C" {
 /* USER CODE BEGIN Includes */
 #include "app.h"
 #include "uart.h"
+#include "temperature.h"
+#include "motor.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -54,6 +56,8 @@ extern "C" {
 
 /* USER CODE END EM */
 
+void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
+
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
 
@@ -64,6 +68,12 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define MOTOR_Pin GPIO_PIN_5
 #define MOTOR_GPIO_Port GPIOA
+#define MOTOR1_Pin GPIO_PIN_10
+#define MOTOR1_GPIO_Port GPIOB
+#define MOTOR_PWM_Pin GPIO_PIN_8
+#define MOTOR_PWM_GPIO_Port GPIOA
+#define MOTOR2_Pin GPIO_PIN_4
+#define MOTOR2_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

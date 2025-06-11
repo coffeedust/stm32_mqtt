@@ -52,6 +52,9 @@ default.size.stdout \
 OBJDUMP_LIST += \
 mqtt_node.list \
 
+OBJCOPY_HEX += \
+mqtt_node.hex \
+
 
 # All Target
 all: main-build
@@ -75,12 +78,17 @@ mqtt_node.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
+mqtt_node.hex: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objcopy  -O ihex $(EXECUTABLES) "mqtt_node.hex"
+	@echo 'Finished building: $@'
+	@echo ' '
+
 # Other Targets
 clean:
-	-$(RM) default.size.stdout mqtt_node.elf mqtt_node.list mqtt_node.map
+	-$(RM) default.size.stdout mqtt_node.elf mqtt_node.hex mqtt_node.list mqtt_node.map
 	-@echo ' '
 
-secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
+secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_HEX)
 
 fail-specified-linker-script-missing:
 	@echo 'Error: Cannot find the specified linker script. Check the linker settings in the build configuration.'

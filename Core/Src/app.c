@@ -312,13 +312,27 @@ void json_parse(char *inStr) {
 			printf2("ITEM2 = %.*s\r\n", t[i+1].end - t[i+1].start, inStr + t[i+1].start);
 			i++;
 		}
-		else if(jsoneq(inStr, &t[i], "MOTOR") == 0) {
+		else if(jsoneq(inStr, &t[i], "IS_RUN") == 0) {
 			// %.s 문자열의 길이를 지정하여 출력
-			printf2("MOTOR = %.*s\r\n", t[i+1].end - t[i+1].start, inStr + t[i+1].start);
-			char tmp[5] = {0};
+			printf2("IS_RUN = %.*s\r\n", t[i+1].end - t[i+1].start, inStr + t[i+1].start);
+			if(strncmp(inStr + t[i+1].start, "NONE", 4) == 0) {
+				stopMotor();
+			}
+			else if(strncmp(inStr + t[i+1].start, "CW", 2) == 0) {
+				dirMotor(dir_cw);
+			}
+			else if(strncmp(inStr + t[i+1].start, "CCW", 3) == 0) {
+				dirMotor(dir_ccw);
+			}
+			i++;
+		}
+		else if(jsoneq(inStr, &t[i], "SPEED") == 0) {
+			// %.s 문자열의 길이를 지정하여 출력
+			printf2("SPEED = %.*s\r\n", t[i+1].end - t[i+1].start, inStr + t[i+1].start);
+			char tmp[5];
 			strncpy(tmp, inStr + t[i+1].start, t[i+1].end - t[i+1].start);
-			uint8_t val = atoi(tmp);
-			HAL_GPIO_WritePin(MOTOR_GPIO_Port, MOTOR_Pin, val);
+			uint8_t speed = atoi(tmp);
+			speedMotor(speed);
 			i++;
 		}
 	}
@@ -334,6 +348,8 @@ void app() {
 	connectAP();
 	// MQTT 접속
 	connectMQTT();
+	// 모터 초기화
+	initMotor(&htim1, TIM_CHANNEL_1);
 	while(1) {
 		static uint32_t cycle_sub = 0, cycle_pub = 0;
 		static uint8_t seq_num = 0;
@@ -354,7 +370,7 @@ void app() {
 					"\"SEQ\":%d,"
 					"\"STATUS\":[{"
 					"\"TEMP1\":%2.1f,"
-					"\"TEMP2\":-1}]}", seq_num++, (float)adcValue / 64);
+					"\"TEMP2\":-1}]}", seq_num++, lookupTemperature(adcValue));
 			printf("AT+MQTTPUBRAW=0,\"MY_TOPIC\",%d,0,0\r\n", strlen(sendMsg));
 			bool status = waitForResponse("OK");
 			if(status) {

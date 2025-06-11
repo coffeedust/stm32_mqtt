@@ -19,4 +19,4 @@
 ../Core/Src/app.c:269:7:receiveMQTT	16	static
 ../Core/Src/app.c:276:5:jsoneq	24	static
 ../Core/Src/app.c:284:6:json_parse	2112	static
-../Core/Src/app.c:327:6:app	536	static
+../Core/Src/app.c:341:6:app	536	static

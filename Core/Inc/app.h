@@ -13,6 +13,7 @@
 extern UART_HandleTypeDef	huart1;
 extern UART_HandleTypeDef	huart2;
 extern ADC_HandleTypeDef	hadc1;
+extern TIM_HandleTypeDef	htim1;
 
 void app();
 

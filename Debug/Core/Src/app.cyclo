@@ -18,5 +18,5 @@
 ../Core/Src/app.c:235:6:connectMQTT	4
 ../Core/Src/app.c:269:7:receiveMQTT	2
 ../Core/Src/app.c:276:5:jsoneq	4
-../Core/Src/app.c:284:6:json_parse	8
-../Core/Src/app.c:327:6:app	6
+../Core/Src/app.c:284:6:json_parse	12
+../Core/Src/app.c:341:6:app	6
