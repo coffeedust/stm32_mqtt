@@ -18,9 +18,6 @@ typedef enum {
 } direction_t;
 
 // 함수 프로토타입 선언 (변수 이름 생략 가능)
-void initMotor(TIM_HandleTypeDef *, uint32_t);
-void dirMotor(direction_t);
-void speedMotor(uint8_t);
-void stopMotor();
+void runStep(direction_t dir);
 
 #endif /* INC_MOTOR_H_ */

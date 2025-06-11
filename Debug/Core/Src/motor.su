@@ -1,4 +1,2 @@
-../Core/Src/motor.c:14:6:initMotor	16	static
-../Core/Src/motor.c:21:6:dirMotor	16	static
-../Core/Src/motor.c:39:6:speedMotor	16	static
-../Core/Src/motor.c:60:6:stopMotor	4	static
+../Core/Src/motor.c:17:6:outStep	16	static
+../Core/Src/motor.c:25:6:runStep	16	static

@@ -8,6 +8,9 @@
 #include "app.h"
 #include "jsmn.h"
 
+direction_t dir;
+uint8_t			speed;
+
 // 데이터 수신 함수
 char* receiveESP() {
 	static char lineBuffer[2048] = {0,};
@@ -316,13 +319,13 @@ void json_parse(char *inStr) {
 			// %.s 문자열의 길이를 지정하여 출력
 			printf2("IS_RUN = %.*s\r\n", t[i+1].end - t[i+1].start, inStr + t[i+1].start);
 			if(strncmp(inStr + t[i+1].start, "NONE", 4) == 0) {
-				stopMotor();
+				dir = dir_none;
 			}
 			else if(strncmp(inStr + t[i+1].start, "CW", 2) == 0) {
-				dirMotor(dir_cw);
+				dir = dir_cw;
 			}
 			else if(strncmp(inStr + t[i+1].start, "CCW", 3) == 0) {
-				dirMotor(dir_ccw);
+				dir = dir_ccw;
 			}
 			i++;
 		}
@@ -331,10 +334,19 @@ void json_parse(char *inStr) {
 			printf2("SPEED = %.*s\r\n", t[i+1].end - t[i+1].start, inStr + t[i+1].start);
 			char tmp[5];
 			strncpy(tmp, inStr + t[i+1].start, t[i+1].end - t[i+1].start);
-			uint8_t speed = atoi(tmp);
-			speedMotor(speed);
+			speed = atoi(tmp);
 			i++;
 		}
+	}
+}
+
+// 1ms 주기로 호출됨
+void SystickCallback() {
+	static uint8_t cur_speed;
+	if(cur_speed > 0) cur_speed--;
+	else {
+		cur_speed = speed;
+		runStep(dir);
 	}
 }
 
@@ -349,7 +361,8 @@ void app() {
 	// MQTT 접속
 	connectMQTT();
 	// 모터 초기화
-	initMotor(&htim1, TIM_CHANNEL_1);
+	speed = 255;
+	dir = dir_none;
 	while(1) {
 		static uint32_t cycle_sub = 0, cycle_pub = 0;
 		static uint8_t seq_num = 0;
